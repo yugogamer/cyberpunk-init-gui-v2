@@ -24,6 +24,9 @@
       <div class="column">
         <a class="title" href="#/characters">My Characters</a>
       </div>
+      <div class="column">
+        <a class="title" href="#/armor">Armor Helper</a>
+      </div>
     </div>
   </section>
 </nav>

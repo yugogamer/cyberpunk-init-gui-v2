@@ -39,12 +39,12 @@
 
 <section class="container">
     <h1 class="title">All your groupes</h1>
-    <section class="notification is-primary">
+    <section class="notification is-info">
         {#each groupes as groupe}
             <CompGroupe {groupe} on:remove={handleEvent} />
         {/each}
     </section>
-    <section class="notification is-primary">
+    <section class="notification is-info">
         <div class="columns">
             <div class="column">
                 <input

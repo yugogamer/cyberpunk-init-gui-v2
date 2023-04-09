@@ -64,11 +64,15 @@
 <section class="container">
     <h1 class="title">Name</h1>
     <section>id for bot usage : {params.id}</section>
-    <section class="notification is-primary">
+    <section class="notification is-info">
         <h1 class="title">Characters</h1>
         <section>
             {#each characters as character}
-                <CompCharacter {character} on:delete={handleEvent} />
+                <CompCharacter
+                    {character}
+                    groupeId={params.id}
+                    on:delete={handleEvent}
+                />
             {/each}
         </section>
         {#if create}

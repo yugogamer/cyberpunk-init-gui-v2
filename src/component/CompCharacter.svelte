@@ -2,10 +2,12 @@
     import type Character from "../entity/character";
     import { createEventDispatcher } from "svelte";
     import Config from "../services/config";
+    import { createCharacters, type InputCharacter } from "../services/query";
 
     const dispatch = createEventDispatcher();
 
     export let character: Character;
+    export let groupeId: number = -1;
     let is_edit = false;
 
     async function updateCharacter() {
@@ -65,6 +67,20 @@
         dispatch("delete", character);
         is_edit = false;
     }
+
+    async function duplicateCharacter() {
+        let inputCharacter: InputCharacter = {
+            name: character.name,
+            baseRef: character.baseRef,
+            modifier: character.modifier,
+            active: character.active,
+            groupeId: Number(groupeId),
+        };
+
+        createCharacters(inputCharacter).then((data) => {
+            dispatch("delete", data);
+        });
+    }
 </script>
 
 <section class="section">
@@ -112,6 +128,9 @@
                 <button class="button is-danger" on:click={deleteCharacter}
                     >delete</button
                 >
+                <button class="button is-warning" on:click={duplicateCharacter}
+                    >Duplicate
+                </button>
             </section>
         </div>
     {:else}

@@ -5,6 +5,10 @@
     let username: string = "";
     let password: string = "";
 
+    let newUsername: string = "";
+    let newEmail: string = "";
+    let newPassword: string = "";
+
     function login() {
         let input = {
             email: username,
@@ -23,6 +27,31 @@
         })
             .then((response) => {
                 console.log("Success login");
+            })
+            .catch((error) => {
+                console.error("Error:", error);
+            });
+    }
+
+    function register() {
+        let input = {
+            email: newEmail,
+            username: newUsername,
+            password: newPassword,
+        };
+
+        const config = new Config();
+
+        fetch(`${config.api_url}account/register`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            credentials: "include",
+            body: JSON.stringify(input),
+        })
+            .then((response) => {
+                alert("Success register");
             })
             .catch((error) => {
                 console.error("Error:", error);
@@ -59,11 +88,26 @@
     <h1 class="title">Register</h1>
     <field class="field">
         <label class="label text">Username</label>
-        <input type="text" class="input dark" placeholder="Username" />
+        <input
+            type="text"
+            class="input dark"
+            placeholder="Username"
+            bind:value={newUsername}
+        />
         <label class="label text">Email</label>
-        <input type="email" class="input dark" placeholder="Email" />
+        <input
+            type="email"
+            class="input dark"
+            placeholder="Email"
+            bind:value={newEmail}
+        />
         <label class="label text">Password</label>
-        <input type="password" class="input dark" placeholder="Password" />
+        <input
+            type="password"
+            class="input dark"
+            placeholder="Password"
+            bind:value={newPassword}
+        />
         <button class="button is-primary">Register</button>
     </field>
 </div>
