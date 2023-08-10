@@ -14,6 +14,8 @@ class Config {
             default: {
             }
         }
+
+        console.log("API URL: " + this.api_url);
     }
 }
 
