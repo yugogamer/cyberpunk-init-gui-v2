@@ -1,21 +1,19 @@
 
+let map = {
+    "raina.ovh": "https://raina.ovh/api/",
+    "cyberpunk.raina.ovh": "https://api.cyberpunk.raina.ovh/api/"
+}
+
 class Config {
     public api_url: String = "http://127.0.0.1:8080/api/";
 
     constructor() {
-        switch (document.location.hostname) {
-            case "raina.ovh":
-                this.api_url = "https://raina.ovh/api/";
-                break;
-            
-            case "cyberpunk.raina.ovh":
-                this.api_url = "https://api.cyberpunk.raina.ovh/api/";
-                break;
-            default: {
-            }
+        let hostname = window.location.hostname;
+        if (map[hostname]) {
+            this.api_url = map[hostname];
         }
 
-        console.log("API URL: " + this.api_url);
+        console.log(`API URL: ${this.api_url}`);
     }
 }
 
