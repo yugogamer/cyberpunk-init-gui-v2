@@ -108,6 +108,6 @@
             placeholder="Password"
             bind:value={newPassword}
         />
-        <button class="button is-primary">Register</button>
+        <button class="button is-primary" on:click={register}>Register</button>
     </field>
 </div>
