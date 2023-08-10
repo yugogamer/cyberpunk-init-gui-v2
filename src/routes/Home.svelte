@@ -67,7 +67,6 @@
 </script>
 
 <div class="container">
-    <h1>Updated</h1>
     <h1 class="title">Login</h1>
     <field class="field">
         <label class="label text">Email</label>
