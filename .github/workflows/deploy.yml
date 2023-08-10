@@ -20,3 +20,12 @@ jobs:
       run: docker build . --tag rg.fr-par.scw.cloud/cyberpunk-container/cyberpunk_gui:latest
     - name: Push the Docker image
       run: docker push rg.fr-par.scw.cloud/cyberpunk-container/cyberpunk_gui:latest
+    - name: update the container
+      uses: jawher/action-scw@v2.19.0
+      env:      
+        SCW_ACCESS_KEY: ${{ secrets.SCW_ACCESS_KEY }}
+        SCW_SECRET_KEY: ${{ secrets.SCALEWAY_KEY }}
+        SCW_ORGANIZATION_ID: ${{ secrets.SCW_ORGANIZATION_ID }}
+        SCW_ZONE: fr-par
+      with:
+        args: container container deploy 673481d9-ea27-4eff-83ed-abff5af7c07e
