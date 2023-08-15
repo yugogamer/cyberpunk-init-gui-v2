@@ -13,8 +13,10 @@ class Config {
             this.api_url = map[hostname];
         }
 
-        console.log(`API URL: ${this.api_url}`);
+        //console.log(`API URL: ${this.api_url}`);
     }
 }
 
-export default Config;
+const config = new Config();
+
+export default config;

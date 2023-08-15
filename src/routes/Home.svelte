@@ -1,4 +1,5 @@
 <script lang="ts">
+    import config from "../services/config";
     import Config from "../services/config";
     import { onMount } from "svelte";
 
@@ -14,8 +15,6 @@
             email: username,
             password: password,
         };
-
-        const config = new Config();
 
         fetch(`${config.api_url}account/login`, {
             method: "POST",
@@ -39,8 +38,6 @@
             username: newUsername,
             password: newPassword,
         };
-
-        const config = new Config();
 
         fetch(`${config.api_url}account/register`, {
             method: "POST",

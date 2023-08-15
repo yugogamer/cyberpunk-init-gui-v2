@@ -1,40 +1,33 @@
 <script lang="ts">
     import type Groupe from "../entity/groupes";
     import CompGroupe from "../component/CompGroupe.svelte";
-    import { createGroupe, getGroups } from "../services/query";
-    import { onMount } from "svelte";
+    import { onDestroy, onMount } from "svelte";
+    import groupesStore from "../services/groupes";
 
     let groupes: Groupe[] = [];
+    const unsubscribe = groupesStore.subscribe((value) => {
+        groupes = value;
+    });
     let inputName: string = "";
 
-    onMount(async () => {
-        await updateGroupes();
+    onMount(() => {
+        if (groupes.length === 0) {
+            groupesStore.updateGroupesList();
+        }
     });
 
     function handleEvent(event: any) {
-        updateGroupes().then(() => {
-            console.log("updated");
-        });
-    }
-
-    async function updateGroupes() {
-        getGroups()
-            .then((data) => {
-                groupes = data.data.getGroupes;
-            })
-            .catch((err) => {
-                console.log(err);
-            });
+        groupesStore.updateGroupesList();
     }
 
     async function createGroupeFunction() {
-        createGroupe(inputName).then((data) => {
-            updateGroupes().then(() => {});
-        });
-
-        updateGroupes().then(() => {});
+        groupesStore.addGroupe(inputName);
         inputName = "";
     }
+
+    onDestroy(() => {
+        unsubscribe();
+    });
 </script>
 
 <section class="container">

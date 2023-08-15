@@ -5,6 +5,7 @@ export default class Character {
     modifier: number;
     baseRef: number;
     active: boolean;
+    assetUrl: string;
 
     constructor(id: number, name: string, modifier: number, baseRef: number, active: boolean) {
         this.id = id;
@@ -12,5 +13,6 @@ export default class Character {
         this.modifier = modifier;
         this.baseRef = baseRef;
         this.active = active;
+        this.assetUrl = "";
     }
 }

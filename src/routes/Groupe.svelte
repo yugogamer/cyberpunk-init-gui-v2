@@ -2,18 +2,27 @@
     import Character from "../entity/character";
     import CompCharacter from "../component/CompCharacter.svelte";
     import {
+        assignCharacterToGroupe,
         createCharacters,
         getCharacters,
         type InputCharacter,
     } from "../services/query";
     import type groupe from "../entity/groupes";
-    import { onMount } from "svelte";
-
+    import { onDestroy, onMount } from "svelte";
+    import Characters from "./Characters.svelte";
+    import characterStore from "../services/character";
+    import { bind } from "svelte/internal";
     export let params: { id: number } = { id: -1 };
+
     let characters: Character[] = [];
-    let newCharacterName = new Character(0, "", 0, 0, false);
-    let create = false;
-    const groupe: groupe = {
+    let myCharacter: Character[] = [];
+    let selected: number;
+
+    const unsubscribe = characterStore.subscribe((value) => {
+        myCharacter = value;
+    });
+
+    let groupe: groupe = {
         id: -1,
         name: "Loading...",
     };
@@ -30,100 +39,54 @@
             });
     }
 
-    async function createCharacter() {
-        let is_active = false;
-        if (newCharacterName.active == true) {
-            is_active = true;
-        }
-        const newCharacter: InputCharacter = {
-            groupeId: Number(params.id),
-            name: newCharacterName.name,
-            baseRef: newCharacterName.baseRef,
-            modifier: newCharacterName.modifier,
-            active: is_active,
-        };
-
-        createCharacters(newCharacter).then((data) => {
-            updateAll().then(() => {
-                newCharacterName = new Character(0, "", 0, 0, false);
+    async function addToGroupe() {
+        assignCharacterToGroupe(groupe.id, selected)
+            .then((data) => {
+                console.log(data);
+                updateAll().then(() => {
+                    console.log("updateAll");
+                });
+            })
+            .catch((err) => {
+                console.log(err);
             });
-        });
     }
 
     onMount(() => {
+        if (myCharacter.length === 0) {
+            characterStore.updateCharacterList();
+        }
         updateAll().then(() => {
             console.log("updateAll");
         });
     });
 
-    async function handleEvent(event: CustomEvent) {
-        updateAll();
-    }
+    onDestroy(() => {
+        unsubscribe();
+    });
 </script>
 
 <section class="container">
     <h1 class="title">Name</h1>
     <section>id for bot usage : {params.id}</section>
     <section class="notification is-info">
+        <h1 class="title">{groupe.name}</h1>
+        <p>add a character</p>
+
+        <div class="select">
+            <select bind:value={selected}>
+                {#each myCharacter as character}
+                    <option value={character.id}>{character.name}</option>
+                {/each}
+            </select>
+        </div>
+        <button class="button is-primary" on:click={addToGroupe}>Add</button>
+
         <h1 class="title">Characters</h1>
         <section>
             {#each characters as character}
-                <CompCharacter
-                    {character}
-                    groupeId={params.id}
-                    on:delete={handleEvent}
-                />
+                <CompCharacter {groupe} {character} />
             {/each}
         </section>
-        {#if create}
-            <div class="field">
-                <label class="label">Name</label>
-                <div class="control">
-                    <input
-                        class="input"
-                        type="text"
-                        placeholder="Name"
-                        bind:value={newCharacterName.name}
-                    />
-                </div>
-                <label class="label">Base Ref</label>
-                <div class="control">
-                    <input
-                        class="input"
-                        type="number"
-                        placeholder="Base Ref"
-                        bind:value={newCharacterName.baseRef}
-                    />
-                </div>
-                <label class="label">Modifier</label>
-                <div class="control">
-                    <input
-                        class="input"
-                        type="number"
-                        placeholder="Modifier"
-                        bind:value={newCharacterName.modifier}
-                    />
-                </div>
-                <label class="checkbox">
-                    <input
-                        type="checkbox"
-                        bind:checked={newCharacterName.active}
-                    />
-                    Active
-                </label>
-                <div class="control">
-                    <button class="button" on:click={createCharacter}>
-                        Create
-                    </button>
-                    <button class="button" on:click={() => (create = false)}>
-                        Cancel</button
-                    >
-                </div>
-            </div>
-        {:else}
-            <button class="button" on:click={() => (create = true)}>
-                Create Character</button
-            >
-        {/if}
     </section>
 </section>

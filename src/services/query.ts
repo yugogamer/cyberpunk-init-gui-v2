@@ -1,6 +1,6 @@
 import type Character from "../entity/character";
 import type Groupe from "../entity/groupes";
-import Config from "./config";
+import config from "./config";
 
 class Query {
     operationName: String;
@@ -14,7 +14,6 @@ class Query {
 }
 
 async function fetchGraphql(query: Query) {
-    const config = new Config();
     const response = await fetch(`${config.api_url}graphql`, {
         method: 'POST',
         headers: {
@@ -41,7 +40,7 @@ interface GroupsCharactersResponse {
 export async function getCharacters(groupeId: number) {
     let query = new Query(
         "GetGroupe",
-        "query GetGroupe($groupeId: Int!) {  getGroupe(groupeId: $groupeId) {    id    name    characters {      id      name      baseRef      modifier      active    }  }}",
+        "query GetGroupe($groupeId: Int!) {  getGroupe(groupeId: $groupeId) {    id    name    characters {      id      name      baseRef      modifier      active   assetUrl }  }}",
         {
             groupeId: Number(groupeId)
         }
@@ -50,24 +49,56 @@ export async function getCharacters(groupeId: number) {
     return response as GroupsCharactersResponse;
 }
 
+export async function getMyCharacters(){
+    let query = new Query(
+        "MyCharacter",
+        "query MyCharacter{myCharacter{id name assetUrl baseRef modifier }}",
+        {}
+    );
+    let response = await fetchGraphql(query);
+    return response.data.myCharacter as Character[];
+}
+
+export async function deleteCharacter(characterId: number){
+    let query = new Query(
+        "Mutation",
+        "mutation Mutation($characterId: Int!) { deleteCharacter(characterId: $characterId) }",
+        {
+            characterId: characterId
+        });
+    let response = await fetchGraphql(query);
+    return response.data.deleteCharacter as boolean;
+}
+
+export async function updateCharacter(characterId: number, character: InputCharacter){
+    let query = new Query(
+        "UpdateCharacter",
+        "mutation UpdateCharacter($characterId: Int!, $inputCharacter: UpdateCharacter!) {   updateCharacter(characterId: $characterId, inputCharacter: $inputCharacter) { assetUrl baseRef createdAt id modifier name updatedAt userId}}",
+        {
+            characterId: characterId,
+            inputCharacter: character
+        }
+    );
+
+    let response = await fetchGraphql(query);
+    return response.data.updateCharacter as Character;
+}
+
 export interface InputCharacter {
-    groupeId: number;
     name: string;
     modifier: number;
     baseRef: number;
-    active: boolean;
 }
 
 export async function createCharacters(character: InputCharacter) {
-    character.active = Boolean(character.active);
     let query = new Query(
         "CreateCharacter",
-        "mutation CreateCharacter($character: InputCharacter!) { createCharacter(character: $character) {      active      baseRef      id      modifier      name } }",
+        "mutation CreateCharacter($character: InputCharacter!) { createCharacter(character: $character) {      baseRef      id      modifier      name assetUrl} }",
         { character: character }
     );
 
     let response = await fetchGraphql(query);
-    return response;
+    return response.data.createCharacter as Character;
 }
 
 export async function createGroupe(name: String) {
@@ -78,7 +109,26 @@ export async function createGroupe(name: String) {
     );
 
     let response = await fetchGraphql(query);
-    return response;
+    return response.data.createGroupe as Groupe;
+}
+
+export async function removeGroupe(groupeId: number) {
+    const query = {
+        operationName: "Mutation",
+        query: "mutation Mutation($groupeId: Int!) {  deleteGroupe(groupeId: $groupeId)}",
+        variables: {
+            groupeId: groupeId,
+        },
+    };
+
+    const response = await fetch(`${config.api_url}graphql`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify(query),
+    });
 }
 
 interface GroupsResponse {
@@ -96,4 +146,32 @@ export async function getGroups() {
 
     let response = await fetchGraphql(query);
     return response as GroupsResponse;
+}
+
+export async function assignCharacterToGroupe(groupeId: number, characterId: number) {
+    let query = new Query(
+        "AssignCharacterToGroupe",
+        "mutation AssignCharacterToGroupe($groupeId: Int!, $characterId: Int!) {  assignCharacterToGroupe(groupeId: $groupeId, characterId: $characterId)}",
+        {
+            groupeId: groupeId,
+            characterId: characterId
+        }
+    );
+
+    let response = await fetchGraphql(query);
+    return response.data.assignCharacterToGroupe as boolean;
+}
+
+export async function changeStatusInGroupe(groupeId: number, characterId: number, status : boolean){
+    let query = new Query(
+        "ChangeStatusInGroupe",
+        "mutation ChangeStatusInGroupe($groupeId: Int!, $characterId: Int!, $active: Boolean!) {  changeStatusInGroupe(groupeId: $groupeId, characterId: $characterId, active: $active)}",
+        {
+            groupeId: groupeId,
+            characterId: characterId,
+            active: status
+        });
+    
+        let response = await fetchGraphql(query);
+        return response.data.changeStatusInGroupe as boolean;
 }
