@@ -1,10 +1,11 @@
 <script lang="ts">
-    import { onMount } from "svelte";
+    import { createEventDispatcher, onMount } from "svelte";
     import type Character from "../entity/character";
     import type Groupe from "../entity/groupes";
     import {
         assignCharacterToGroupe,
         changeStatusInGroupe,
+        removeCharacterFromGroupe,
     } from "../services/query";
 
     export let character: Character;
@@ -14,11 +15,24 @@
         imgSrc = character.assetUrl;
     }
 
+    const dispatch = createEventDispatcher();
+
     async function updateInGroupe() {
         character.active = !character.active;
         changeStatusInGroupe(groupe.id, character.id, character.active)
             .then((data) => {
                 console.log(data);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    }
+
+    async function removeFromGroupe() {
+        removeCharacterFromGroupe(groupe.id, character.id)
+            .then((data) => {
+                console.log(data);
+                dispatch("update");
             })
             .catch((err) => {
                 console.log(err);
@@ -42,6 +56,9 @@
         <div class="column">mod : {character.modifier}</div>
 
         <div class="field">
+            <button class="button is-danger" on:click={removeFromGroupe}
+                >remove from groupe</button
+            >
             <input
                 id="switchExample"
                 type="checkbox"

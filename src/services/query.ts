@@ -223,3 +223,16 @@ export async function getInvitations(){
     let response = await fetchGraphql(query);
     return response.data.getInvitation as Groupe[];
 }
+
+export async function removeCharacterFromGroupe(groupeId: number, characterId: number){
+    let query = new Query(
+        "RemoveCharacterFromGroupe",
+        "mutation RemoveCharacterFromGroupe($groupeId: Int!, $characterId: Int!) {  removeCharacterFromGroupe(groupeId: $groupeId, characterId: $characterId)}",
+        {
+            groupeId: groupeId,
+            characterId: characterId
+        });
+    
+        let response = await fetchGraphql(query);
+        return response.data.removeCharacterFromGroupe as boolean;
+}

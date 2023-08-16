@@ -103,7 +103,7 @@
         <h1 class="title">Characters</h1>
         <section>
             {#each characters as character}
-                <CompCharacter {groupe} {character} />
+                <CompCharacter {groupe} {character} on:update={updateAll} />
             {/each}
         </section>
     </section>
