@@ -38,6 +38,7 @@
                 if (response.status === 201) {
                     characterStore.updateCharacterList();
                 }
+                alert("image uploaded");
             })
             .catch((err) => {
                 console.log(err);

@@ -3,8 +3,11 @@
     import CompGroupe from "../component/CompGroupe.svelte";
     import { onDestroy, onMount } from "svelte";
     import groupesStore from "../services/groupes";
+    import { getInvitations } from "../services/query";
+    import CompInvitation from "../component/CompInvitation.svelte";
 
     let groupes: Groupe[] = [];
+    let invitation: Groupe[] = [];
     const unsubscribe = groupesStore.subscribe((value) => {
         groupes = value;
     });
@@ -14,6 +17,13 @@
         if (groupes.length === 0) {
             groupesStore.updateGroupesList();
         }
+        getInvitations()
+            .then((data) => {
+                invitation = data;
+            })
+            .catch((err) => {
+                console.log(err);
+            });
     });
 
     function handleEvent(event: any) {
@@ -56,5 +66,12 @@
                 </button>
             </div>
         </div>
+    </section>
+
+    <h1 class="title">Invitation</h1>
+    <section class="notification is-info">
+        {#each invitation as groupe}
+            <CompInvitation {groupe} />
+        {/each}
     </section>
 </section>

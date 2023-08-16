@@ -36,6 +36,7 @@
     {/each}
     <h1 class="title">Create character</h1>
     <div class="field">
+        <!-- svelte-ignore a11y-label-has-associated-control -->
         <label class="label">Name</label>
         <div class="control">
             <input
@@ -45,6 +46,7 @@
                 bind:value={newCharacter.name}
             />
         </div>
+        <!-- svelte-ignore a11y-label-has-associated-control -->
         <label class="label">Base Ref</label>
         <div class="control">
             <input
@@ -54,6 +56,7 @@
                 bind:value={newCharacter.baseRef}
             />
         </div>
+        <!-- svelte-ignore a11y-label-has-associated-control -->
         <label class="label">Modifier</label>
         <div class="control">
             <input

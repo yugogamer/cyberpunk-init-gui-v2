@@ -175,3 +175,51 @@ export async function changeStatusInGroupe(groupeId: number, characterId: number
         let response = await fetchGraphql(query);
         return response.data.changeStatusInGroupe as boolean;
 }
+
+export async function inviteUser(groupeId: number, userName: string){
+    let query = new Query(
+        "InviteUser",
+        "mutation InviteUser($groupeId: Int!, $userName: String!) {  inviteUser(groupeId: $groupeId, userName: $userName)}",
+        {
+            groupeId: groupeId,
+            userName: userName
+        });
+    
+        let response = await fetchGraphql(query);
+        return response.data.inviteUser as boolean;
+}
+
+export async function acceptInvitation(groupeId: number){
+    let query = new Query(
+        "AcceptInvitation",
+        "mutation AcceptInvitation($groupeId: Int!) {  acceptInvitation(groupeId: $groupeId)}",
+        {
+            groupeId: groupeId
+        });
+    
+        let response = await fetchGraphql(query);
+        return response.data.acceptInvitation as boolean;
+}
+
+export async function declineInvitation(groupeId: number){
+    let query = new Query(
+        "DeclineInvitation",
+        "mutation DeclineInvitation($groupeId: Int!) {  declineInvitation(groupeId: $groupeId)}",
+        {
+            groupeId: groupeId
+        });
+    
+        let response = await fetchGraphql(query);
+        return response.data.declineInvitation as boolean;
+}
+
+export async function getInvitations(){
+    let query = new Query(
+        "GetInvitations",
+        "query GetInvitations{getInvitations{id name}}",
+        {}
+    );
+
+    let response = await fetchGraphql(query);
+    return response.data.getInvitation as Groupe[];
+}

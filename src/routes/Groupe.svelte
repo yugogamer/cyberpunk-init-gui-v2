@@ -1,18 +1,16 @@
 <script lang="ts">
-    import Character from "../entity/character";
+    import type Character from "../entity/character";
     import CompCharacter from "../component/CompCharacter.svelte";
     import {
         assignCharacterToGroupe,
-        createCharacters,
         getCharacters,
-        type InputCharacter,
+        inviteUser,
     } from "../services/query";
     import type groupe from "../entity/groupes";
     import { onDestroy, onMount } from "svelte";
-    import Characters from "./Characters.svelte";
     import characterStore from "../services/character";
-    import { bind } from "svelte/internal";
     export let params: { id: number } = { id: -1 };
+    let playerEmail: string = "";
 
     let characters: Character[] = [];
     let myCharacter: Character[] = [];
@@ -52,6 +50,16 @@
             });
     }
 
+    async function invitePlayer() {
+        inviteUser(groupe.id, playerEmail)
+            .then((data) => {
+                console.log(data);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    }
+
     onMount(() => {
         if (myCharacter.length === 0) {
             characterStore.updateCharacterList();
@@ -81,6 +89,16 @@
             </select>
         </div>
         <button class="button is-primary" on:click={addToGroupe}>Add</button>
+
+        <h1>Invite a player</h1>
+        <input
+            class="input"
+            type="text"
+            placeholder="player name"
+            bind:value={playerEmail}
+        />
+        <button class="button is-primary" on:click={invitePlayer}>Invite</button
+        >
 
         <h1 class="title">Characters</h1>
         <section>
