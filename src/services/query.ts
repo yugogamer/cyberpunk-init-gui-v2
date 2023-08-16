@@ -215,8 +215,8 @@ export async function declineInvitation(groupeId: number){
 
 export async function getInvitations(){
     let query = new Query(
-        "GetInvitations",
-        "query GetInvitations{getInvitations{id name}}",
+        "GetInvitation",
+        "query GetInvitation{getInvitation{id name}}",
         {}
     );
 
